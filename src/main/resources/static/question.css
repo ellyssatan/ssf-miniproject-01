@@ -15,7 +15,7 @@ label.radio input {
 }
 
 label.radio span {
-  padding: 10px 0px;
+  padding: 10px 10px;
   border: 1px solid palevioletred;
   display: inline-block;
   /* display: block; */

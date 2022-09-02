@@ -1,7 +1,6 @@
 package vttp.miniproject01game.controllers;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -9,29 +8,20 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import vttp.miniproject01game.models.Category;
 import vttp.miniproject01game.models.Trivia;
 import vttp.miniproject01game.models.User;
-import vttp.miniproject01game.repositories.TriviaRepository;
 import vttp.miniproject01game.services.TriviaService;
 import vttp.miniproject01game.services.UserService;
 
@@ -45,23 +35,14 @@ public class TriviaController {
     @Autowired
     private UserService userSvc;
 
-    // @Autowired
-    // @Qualifier("triviaValidator")
-    // private Validator validator;
-    
-    // allows us to configure web data binding directly within the controller
-    // initialize the WebDataBinder that is used for data binding from web request parameters to JavaBean objects. Here, the WebDataBinder is where the validator is set.
-    // @InitBinder
-    // private void initBinder(WebDataBinder binder) {
-    //     binder.setValidator(validator);
-    // }
-
     List<Trivia> questionList;
+    List<String> ansList = new ArrayList<>();
 
-    @PostMapping("/register")
-    public String registerUser(@RequestBody MultiValueMap<String, String> form, Model model) {
+    @PostMapping("/registered")
+    public String registerUser(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
         String name = form.getFirst("name");
+        // String name = (String) sess.getAttribute("name");
         String email = form.getFirst("email");
         String password = form.getFirst("password");
 
@@ -71,18 +52,26 @@ public class TriviaController {
             u = u.create(name, email, password);
 
             userSvc.saveUser(u);
-            System.out.println("USER REGISTERED");
+            sess.setAttribute("name", name);
+            // model.addAttribute("name", name);
+            // System.out.println("USER REGISTERED");
+
+            List<Category> options = triviaSvc.getCategories();
+            // System.out.println(">>>OPTIONS LIST: " + options);
+
+            model.addAttribute("options", options);
+            model.addAttribute("name", name);
+            // String nameRetrieved = (String) sess.getAttribute("name");
+            // System.out.println("NAME RETRIEVED------ " + nameRetrieved);
             return "start";
         }
         
-        System.out.println(">>>>USER EXISTS, USE LOGIN PAGE");
-
-        // model.addAttribute("name", name);
+        // System.out.println(">>>>USER EXISTS, USE LOGIN PAGE");
         return "login";
     }
 
-    @PostMapping("/login")
-    public String userLogin(@RequestBody MultiValueMap<String, String> form, Model model) {
+    @PostMapping("/loginPage")
+    public String userLogin(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
         String email = form.getFirst("username");
         String password = form.getFirst("password");
@@ -90,42 +79,74 @@ public class TriviaController {
         User u = userSvc.getUser(email);
         String error;
 
+        // check if user exists
         if (u == null) {
-            System.out.printf("Cannot find user %s", email);
+            error = "User does not exist...Please register";
+            // System.out.printf("Cannot find user %s", email);
+            model.addAttribute("error", error);
+            return "index";
         }
 
-        if (u.getPassword().equals(password)) {
-            model.addAttribute("name", u.getName());
+        // check password
+        if (BCrypt.checkpw(password, u.getPassword())) {
+
+            // System.out.println("Password matches");
+            String name = u.getName();
+
+            List<Category> options = triviaSvc.getCategories();
+            // System.out.println(">>>OPTIONS LIST: " + options);
+
+            sess.setAttribute("name", name);
+
+            model.addAttribute("name", name);
+            model.addAttribute("options", options);
             return "start";
 
         } else {
-            error = "WRONG PASSWORD";
-            System.out.println("WRONG PASSWORD");
+
+            error = "WRONG PASSWORD!!";
+            // System.out.println("Password does not match");
             model.addAttribute("error", error);
             return "login";
         }
-        
     }
 
-    @GetMapping("/trivia")
-    public String getCategories(Model model) {
-
-        List<Category> options = triviaSvc.getCategories();
-        // System.out.println(">>>OPTIONS LIST: " + options);
-
-        model.addAttribute("options", options);
-        return "start";
+    @RequestMapping("/register")
+    public String registerPage() {
+        return "index";
     }
+
+    @RequestMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
+
+    // @GetMapping("/trivia")
+    // public String getCategories(Model model, HttpSession sess) {
+
+    //     List<Category> options = triviaSvc.getCategories();
+    //     System.out.println(">>>OPTIONS LIST: " + options);
+    //     String name = (String) sess.getAttribute("name");
+    //     sess.setAttribute("name", name);
+    //     System.out.println("NAME FROM getcat:  " + name);
+
+    //     model.addAttribute("name", name);
+    //     model.addAttribute("options", options);
+    //     return "start";
+    // }
 
     @PostMapping("/trivia")
-    public String getTrivia(@RequestBody MultiValueMap<String, String> form, Model model) {
+    public String getTrivia(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
         String qn = form.getFirst("qn");
         String cat = form.getFirst("cat");
         String dif = form.getFirst("dif");
         String type = form.getFirst("type");
         triviaSvc.getTrivia(qn, cat, dif, type);
-        // sess.setAttribute("questions", listOfTrivia);
+
+        String name = (String) sess.getAttribute("name");
+        sess.setAttribute("name", name);
+        System.out.println("NAME FROM TRIVIA METHOD:  " + name);
 
         return listByPage(model, 1);
     }
@@ -147,8 +168,35 @@ public class TriviaController {
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalItems", totalItems);
-        return "index";
+        return "question";
     }
+
+    @PostMapping("/next")
+    public String saveOptions(@RequestBody MultiValueMap<String, String> form, HttpSession sess) {
+
+        String name = (String) sess.getAttribute("name");
+        sess.setAttribute("name", name);
+
+        String ans = form.getFirst("ans");
+        System.out.println("ANSWER SELECTED: " + ans);
+        String qnNum = form.getFirst("page");
+        System.out.println("QN NUMBER: " + qnNum);
+
+        ansList.add(Integer.parseInt(qnNum), ans);
+        System.out.println("ans list: " + ansList.toString());
+
+        return "question";
+    }
+
+    @PostMapping("/back")
+    public String getOptions(HttpSession sess) {
+        return null;
+    }
+
+    
+
+
+
 
     // @PostMapping("/")
     // public String prevNext(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
@@ -185,23 +233,12 @@ public class TriviaController {
     // }
 
     // @GetMapping("/getresults")
-    // public String getResults (@RequestParam(value="ans") String[] radioCheckedValues, Model model) {
+    // public String getResults (@RequestParam(value="ans") String[] radioCheckedValues, Model model, HttpSession sess) {
+
     //     for (String s : radioCheckedValues) {
     //         System.out.println(s);
     //     }
     //     return null;
-    // }
-
-    // @PostMapping("postresults")
-    // public String submitForm(Model model, @Validated Trivia trivia, BindingResult result) {
-    //     String returnVal = "successfully completed";
-    //     if(result.hasErrors()) {
-    //         initModelList(model);
-    //         returnVal = "order";
-    //     } else {
-    //         model.addAttribute("order", order);
-    //     }       
-    //     return returnVal;
     // }
 
     private boolean isNull(String s) {

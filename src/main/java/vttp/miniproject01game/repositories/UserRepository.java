@@ -19,7 +19,7 @@ public class UserRepository {
     
     public Optional<String> getUser(String email) {
 
-        System.out.println("Entered idexists");
+        // System.out.println("Entered idexists");
 
         if (redisTemplate.hasKey(email)) {
 

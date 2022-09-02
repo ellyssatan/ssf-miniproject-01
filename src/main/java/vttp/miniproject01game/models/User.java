@@ -1,5 +1,9 @@
 package vttp.miniproject01game.models;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
@@ -23,7 +27,9 @@ public class User {
         User u = new User();
         u.setName(name);
         u.setEmail(email);
-        u.setPassword(password);
+        String pw_hash = BCrypt.hashpw(password, BCrypt.gensalt());
+        // System.out.printf("!!!!!! pw_hash: %s", pw_hash);
+        u.setPassword(pw_hash);
         return u;
     }
 
@@ -35,13 +41,6 @@ public class User {
             .add("password", password)
             .build();
     }
-
-    // public static String createJsonString(JsonObject jo) {
-    //     System.out.printf("JSON >>>>> %s\n\n", jo);
-    //     System.out.printf("JSON STRING >>>>> %s\n\n", jo.toString());
-
-    //     return jo.toString();
-    // }
 
     // Create Model from JsonObject
     public static User create(JsonObject jo) {

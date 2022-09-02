@@ -12,7 +12,7 @@
 
 <body>
   <section class="vh-100 bg-image"
-  style="background-image: url('https://img.freepik.com/premium-vector/urban-vector-city-map-st-louis-california-united-states-america_601748-27072.jpg?w=2000');">
+  style="background-image: url('https://i.pinimg.com/originals/71/82/90/7182904fc824379d27e601cc289e59bb.jpg');">
   <div class="mask d-flex align-items-center h-100 gradient-custom-3">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
@@ -21,7 +21,7 @@
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Create an account</h2>
 
-              <form method="POST" action="/register">
+              <form method="POST" action="/registered">
 
                 <div class="form-outline mb-4">
                   <input type="text" id="form3Example1cg" class="form-control form-control-lg" name="name"/>
@@ -47,7 +47,7 @@
                   <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
                 </div>
 
-                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a th:href="login.html" class="fw-bold text-body"><u>Login here</u></a></p>
+                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a th:href="@{login}" class="fw-bold text-body"><u>Login here</u></a></p>
 
               </form>
 

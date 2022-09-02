@@ -33,7 +33,7 @@
                   <h3>Sign In</h3>
                   <p class="mb-4">Sign in here to start the quiz!</p>
                 </div>
-                <form action="/login" method="POST">
+                <form action="/loginPage" method="POST">
                     <div class="form-group first">
                       <label for="username">Username</label>
                       <input type="email" class="form-control" name="username">
@@ -56,6 +56,9 @@
                     </div>
       
                     <input type="submit" value="Log In" class="btn btn-block btn-primary">
+
+                    <p class="text-center text-muted mt-5 mb-0">Don't have an account? <a th:href="@{register}" class="fw-bold text-body"><u>Register here</u></a></p>
+
       
                     <!-- <span class="d-block text-left my-4 text-muted">&mdash; or login with &mdash;</span> -->
                     

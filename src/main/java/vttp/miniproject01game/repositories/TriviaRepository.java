@@ -14,8 +14,6 @@ import vttp.miniproject01game.models.Trivia;
 
 @Repository
 public class TriviaRepository {
-
-    
     
     List<Trivia> triviaList = new LinkedList<>();
     
