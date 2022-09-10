@@ -1,8 +1,9 @@
 package vttp.miniproject01game.models;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -12,7 +13,8 @@ public class User {
     private String name;
     private String email;
     private String password;
-
+    private int highscore;
+    
     public String getName() {   return name;    }
     public void setName(String name) {      this.name = name;   }
 
@@ -22,6 +24,9 @@ public class User {
     public String getPassword() {   return password;        }
     public void setPassword(String password) {      this.password = password;   }
 
+    public int getHighscore() {   return highscore;        }
+    public void setHighscore(int highscore) {      this.highscore = highscore;   }
+
     // Create a user
     public User create(String name, String email, String password) {
         User u = new User();
@@ -30,6 +35,7 @@ public class User {
         String pw_hash = BCrypt.hashpw(password, BCrypt.gensalt());
         // System.out.printf("!!!!!! pw_hash: %s", pw_hash);
         u.setPassword(pw_hash);
+        u.setHighscore(0);
         return u;
     }
 
@@ -39,6 +45,7 @@ public class User {
             .add("name", name)
             .add("email", email)
             .add("password", password)
+            .add("highscore", highscore)
             .build();
     }
 
@@ -48,6 +55,7 @@ public class User {
         u.setName(jo.getString("name"));
         u.setEmail(jo.getString("email"));
         u.setPassword(jo.getString("password"));
+        u.setHighscore(jo.getInt("highscore"));
         return u;
 
     }

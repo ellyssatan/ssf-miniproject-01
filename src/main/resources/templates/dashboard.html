@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Score Dashboard</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+          }
+    </style>
+</head>
+<body>
+    <h1>DASHBOARD</h1>
+    <table>
+        <tr>
+            <td>Username</td>
+            <td>Highscore</td>
+            <td>Accuracy</td>
+        </tr>
+
+        <tr data-th-each="u : ${listUsers}">
+            <td>
+                <span data-th-text="${u.name}"></span>
+            </td>
+            <td>
+                <span data-th-text="${u.highscore}"></span>
+            </td>
+        </tr>
+        
+    </table>
+
+
+
+
+
+
+
+
+    
+</body>
+</html>

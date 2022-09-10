@@ -2,6 +2,7 @@ package vttp.miniproject01game.services;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,11 @@ public class UserService {
 
     public boolean checkUser(String email) {
         return uRepo.userExists(email);
+    }
+
+    public List<User> getAllUsers() {
+        
+        return uRepo.getAllUsers();
+
     }
 }

@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="btn btn-primary border-success align-items-center btn-success d-flex justify-content-center">SUBMIT<i class="fa fa-angle-right ml-2"></i></button>
+                <!-- <button type="submit" class="btn btn-primary border-success align-items-center btn-success d-flex justify-content-center">SUBMIT<i class="fa fa-angle-right ml-2"></i></button> -->
                 <nav >
                     Total Items [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
                     <input type="hidden" name="page" data-th-value="${currentPage}">
@@ -67,9 +67,9 @@
                     </li> -->
 
                     <!-- <form action="/next" method="POST"> -->
-                        <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled' }">
-                        <a class="page-link" th:href="@{'/trivia/' + ${currentPage + 1}}">Next</a>
-                        </li>
+                        <li type="submit" th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled' }">
+                            <button type="submit"><a class="page-link" th:href="@{'/trivia/' + ${currentPage + 1}}">Next</a>
+                        </button></li>
                     <!-- </form> -->
                     
                 

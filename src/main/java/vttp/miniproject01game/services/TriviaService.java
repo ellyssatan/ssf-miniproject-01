@@ -2,6 +2,7 @@ package vttp.miniproject01game.services;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class TriviaService {
         .queryParamIfPresent("type", Optional.of(type))
         .toUriString();
 
-        System.out.println("URI>> " + uri);
+        // System.out.println("URI>> " + uri);
         // Create the GET request, GET url
         RequestEntity<Void> req = RequestEntity.get(uri).build();
 
@@ -113,6 +114,7 @@ public class TriviaService {
         return pageResponse;
     }
 
+    // Get list of categories
     public List<Category> getCategories() {
 
         String payload;
@@ -163,6 +165,16 @@ public class TriviaService {
             categoryList.add(Category.create(jo));
         }
         return categoryList;
+    }
+
+    // Get list of answers
+    public List<String> getAnswers(List<Trivia> questions) {
+
+        List<String> correctAnswers = new ArrayList<>();
+        for (Trivia t : questions) {
+            correctAnswers.add(t.getCorrect_answer());
+        }
+        return correctAnswers;
     }
 
     

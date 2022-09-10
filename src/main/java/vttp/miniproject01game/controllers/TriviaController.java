@@ -43,7 +43,7 @@ public class TriviaController {
 
         String name = form.getFirst("name");
         // String name = (String) sess.getAttribute("name");
-        String email = form.getFirst("email");
+        String email = form.getFirst("email").toLowerCase();
         String password = form.getFirst("password");
 
         if (!userSvc.checkUser(email)) {
@@ -73,7 +73,7 @@ public class TriviaController {
     @PostMapping("/loginPage")
     public String userLogin(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
-        String email = form.getFirst("username");
+        String email = form.getFirst("username").toLowerCase();
         String password = form.getFirst("password");
 
         User u = userSvc.getUser(email);
@@ -155,14 +155,14 @@ public class TriviaController {
     @GetMapping("/trivia/{pageNum}")
     public String listByPage(Model model, @PathVariable("pageNum") int pageNum) {
         Page<Trivia> page = triviaSvc.listByPage(pageNum);
-        System.out.println("page: " + page);
+        // System.out.println("page: " + page);
         List<Trivia> listTrivia = page.getContent();
 
-        System.out.println("PageNum = " + pageNum);
+        // System.out.println("PageNum = " + pageNum);
         long totalItems = page.getTotalElements();
-        System.out.println("Total element = " + page.getTotalElements());
+        // System.out.println("Total element = " + page.getTotalElements());
         int totalPages = page.getTotalPages();
-        System.out.println("Total Pages = " + page.getTotalPages());
+        // System.out.println("Total Pages = " + page.getTotalPages());
       
         model.addAttribute("listTrivia", listTrivia);
         model.addAttribute("currentPage", pageNum);
@@ -182,8 +182,9 @@ public class TriviaController {
         String qnNum = form.getFirst("page");
         System.out.println("QN NUMBER: " + qnNum);
 
-        ansList.add(Integer.parseInt(qnNum), ans);
+        ansList.add((Integer.parseInt(qnNum)-1), ans);
         System.out.println("ans list: " + ansList.toString());
+        sess.setAttribute("anslist", ansList);
 
         return "question";
     }
@@ -193,9 +194,17 @@ public class TriviaController {
         return null;
     }
 
-    
+    // DASHBOARD
+    @RequestMapping("/dashboard")
+    public String getDashbord(Model model) {
 
+        // dashboard = "dashboard";
+        List<User> users = userSvc.getAllUsers();
+        System.out.println(users.toString());
 
+        model.addAttribute("listUsers", users);
+        return "dashboard";
+    }
 
 
     // @PostMapping("/")
