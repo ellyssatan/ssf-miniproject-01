@@ -1,6 +1,7 @@
 package vttp.miniproject01game.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import vttp.miniproject01game.models.Category;
 import vttp.miniproject01game.models.Trivia;
@@ -36,7 +38,6 @@ public class TriviaController {
     private UserService userSvc;
 
     List<Trivia> questionList;
-    List<String> ansList = new ArrayList<>();
 
     @PostMapping("/registered")
     public String registerUser(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
@@ -144,6 +145,8 @@ public class TriviaController {
         String type = form.getFirst("type");
         triviaSvc.getTrivia(qn, cat, dif, type);
 
+        sess.setAttribute("qn", qn);
+        
         String name = (String) sess.getAttribute("name");
         sess.setAttribute("name", name);
         System.out.println("NAME FROM TRIVIA METHOD:  " + name);
@@ -154,7 +157,7 @@ public class TriviaController {
 
     @GetMapping("/trivia/{pageNum}")
     public String listByPage(Model model, @PathVariable("pageNum") int pageNum) {
-        Page<Trivia> page = triviaSvc.listByPage(pageNum);
+        Page<Trivia> page = triviaSvc.listByPage(pageNum-1);
         // System.out.println("page: " + page);
         List<Trivia> listTrivia = page.getContent();
 
@@ -171,39 +174,71 @@ public class TriviaController {
         return "question";
     }
 
-    @PostMapping("/next")
-    public String saveOptions(@RequestBody MultiValueMap<String, String> form, HttpSession sess) {
+    // @PostMapping("/next")
+    // public String saveOptions(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
+
+    //     String name = (String) sess.getAttribute("name");
+    //     sess.setAttribute("name", name);
+
+    //     String ans = form.getFirst("ans");
+    //     System.out.println("ANSWER SELECTED: " + ans);
+
+    //     String qnNum = form.getFirst("page");
+    //     System.out.println("QN NUMBER: " + qnNum);
+
+    //     ansList.add((Integer.parseInt(qnNum)-1), ans);
+    //     System.out.println("ans list: " + ansList.toString());
+    //     sess.setAttribute("anslist", ansList);
+    //     System.out.println("CALLED NEXT");
+
+    //     return listByPage(model, Integer.parseInt(qnNum)+1);
+    // }
+
+    @GetMapping("/next")
+    public String saveOptions(@RequestParam String ans, @RequestParam String page, Model model, HttpSession sess) {
+
+
+        String qn = (String) sess.getAttribute("qn");
+        sess.setAttribute("qn", qn);
+        String[] ansList = new String[Integer.parseInt(qn)];
 
         String name = (String) sess.getAttribute("name");
         sess.setAttribute("name", name);
 
-        String ans = form.getFirst("ans");
+    
         System.out.println("ANSWER SELECTED: " + ans);
-        String qnNum = form.getFirst("page");
-        System.out.println("QN NUMBER: " + qnNum);
+        System.out.println("QN NUMBER: " + page);
 
-        ansList.add((Integer.parseInt(qnNum)-1), ans);
-        System.out.println("ans list: " + ansList.toString());
+        ansList[Integer.parseInt(page)-1] = ans;
+        // ansList.add((), ans);
+        System.out.println("ans list: " + Arrays.toString(ansList));
         sess.setAttribute("anslist", ansList);
 
-        return "question";
+        return listByPage(model, Integer.parseInt(page)+1);
     }
 
-    @PostMapping("/back")
-    public String getOptions(HttpSession sess) {
-        return null;
+    @GetMapping("/back")
+    public String getOptions(@RequestParam String page, Model model, HttpSession sess) {
+
+        sess.getAttribute("name");
+        String[] ansList = (String[]) sess.getAttribute("anslist");
+
+        String ans = ansList[Integer.parseInt(page)+1];
+        System.out.println("CALLED BACK");
+
+        return listByPage(model, Integer.parseInt(page)-1);
+
     }
 
-    // DASHBOARD
-    @RequestMapping("/dashboard")
-    public String getDashbord(Model model) {
+    // SCOREBOARD
+    @RequestMapping("/scoreboard")
+    public String getScoreboard(Model model) {
 
-        // dashboard = "dashboard";
         List<User> users = userSvc.getAllUsers();
         System.out.println(users.toString());
 
         model.addAttribute("listUsers", users);
-        return "dashboard";
+        return "scoreboard";
     }
 
 

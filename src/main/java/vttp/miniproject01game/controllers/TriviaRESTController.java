@@ -1,6 +1,7 @@
 package vttp.miniproject01game.controllers;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class TriviaRESTController {
     private UserService userSvc;
     
     @GetMapping(path = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getRanking() {
+    public ResponseEntity<String> getScoreboard() {
 
         List<User> users = userSvc.getAllUsers();
 
@@ -47,21 +48,20 @@ public class TriviaRESTController {
         int highscore;
         String userName;
         
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        List<String> scoreList = new LinkedList<>();
         
         for (User u : users) {
+
             highscore = u.getHighscore();
             userName = u.getName();
-            Sort sort = Sort.by(Integer.toString(highscore));
+            String email = u.getEmail();
+            String userScore = userName.concat(", ").concat(email).concat(", ").concat(Integer.toString(highscore));
+            scoreList.add(userScore);
         }
 
-        
 
-
-
-
-        JsonObject builder = Json
-                .createObjectBuilder()
+        JsonObject builder = Json.createObjectBuilder()
+            // .add(name, value)
                 .build();
 
         return ResponseEntity.ok(builder.toString());

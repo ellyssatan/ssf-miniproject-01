@@ -177,6 +177,4 @@ public class TriviaService {
         return correctAnswers;
     }
 
-    
-
 }
