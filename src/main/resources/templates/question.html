@@ -5,26 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> -->
     <link rel="stylesheet" th:href="@{/question.css}">
     <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css}" rel="stylesheet">
     <title>Quiz</title>
 </head>
 <body>
-    <form action="/results" method="post">
-
+    <div class="topnav" id="myTopnav">
+        <a th:href="@{start}" class="active">Home</a>
+        <a th:href="@{scoreboard}">Scoreboard</a>
+        <a th:href="@{login}" class="split">Log out</a>
+    </div>
+    <form action="/results" method="POST">
         <div class="container mt-5">
             <div class="d-flex justify-content-center row">
                 <div class="col-md-10 col-lg-10">
                     <div class="border">
-                        <!-- <div class="question bg-white p-3 border-bottom">
-                            <div class="d-flex flex-row justify-content-between align-items-center mcq">
-                                <h4> <span data-th-text="${n.question}"></span>Quiz</h4>
-                            </div>
-                        </div> -->
                         <div class="question bg-white p-3 border-bottom">
                             <div data-th-each=" n : ${listTrivia}">
                                 
@@ -59,47 +55,16 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <nav>
-                    Total Items [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
-                    <input type="hidden" name="page" data-th-value="${currentPage}">
-                    <div>
-                        <button type="submit" data-th-if="${currentPage} == ${totalPages}" class="btn btn-primary align-items-center">SUBMIT</button>
-                    </div>
-
-                <ul class="pagination justify-content-center">
-                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled' }">
-                        <a class="page-link" th:href="@{/trivia/1}">First</a>
-                    </li>
-
-                    <!-- <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled' }">
-                        <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
-                            <a class="page-link" th:href="@{'/trivia/' + ${currentPage - 1}}">
-                            <button type="submit" formaction="/back" formmethod="GET" class="btn btn-primary d-flex align-items-center btn-danger"><i class="fa fa-angle-left mt-1 mr-1"></i>Previous</button>
-                            </a>
-                        </div>
-                    </li>
-                     -->
-                    <!-- <li th:class="${currentPage != i ? 'page-item' : 'page-item active' }"
-                    th:each="i : ${#numbers.sequence(1, totalPages)}">
-                        <a class="page-link" th:href="@{'/trivia/' + ${i}}">[[${i}]]</a>
-                    </li> -->
-
-                    <!-- <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled' }">
-                        <a class="page-link" th:href="@{'/trivia/' + ${currentPage + 1}}">
-                            <button type="submit" formaction="/next" formmethod="GET">Next</button></a>
-                    </li> -->
-
-                
-                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled' }">
-                    <a class="page-link" th:href="@{'/trivia/' + ${totalPages}}">Last</a>
-                    </li>
-                </ul>
-                </nav>
+            <div class=" p-5">
+                Total Questions [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
+                <input type="hidden" name="page" data-th-value="${currentPage}">
+                <div class="d-flex justify-content-end">
+                    <button type="submit" data-th-if="${currentPage} == ${totalPages}" class="btn btn-primary align-items-center">SUBMIT</button>
+                </div>
             </div>
     
     </form>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}"></script>
+    <script src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js}"></script>
 
 </body>
 </html>

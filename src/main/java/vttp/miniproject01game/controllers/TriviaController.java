@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import vttp.miniproject01game.models.Category;
 import vttp.miniproject01game.models.Trivia;
@@ -41,7 +40,6 @@ public class TriviaController {
     public String registerUser(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
         String name = form.getFirst("name");
-        // String name = (String) sess.getAttribute("name");
         String email = form.getFirst("email").toLowerCase();
         String password = form.getFirst("password");
 
@@ -52,7 +50,6 @@ public class TriviaController {
 
             userSvc.saveUser(u);
             sess.setAttribute("name", name);
-            // model.addAttribute("name", name);
             // System.out.println("USER REGISTERED");
 
             List<Category> options = triviaSvc.getCategories();
@@ -60,16 +57,14 @@ public class TriviaController {
 
             model.addAttribute("options", options);
             model.addAttribute("name", name);
-            // String nameRetrieved = (String) sess.getAttribute("name");
-            // System.out.println("NAME RETRIEVED------ " + nameRetrieved);
+
             return "start";
         }
-        
-        // System.out.println(">>>>USER EXISTS, USE LOGIN PAGE");
+
         return "login";
     }
 
-    @PostMapping("/loginPage")
+    @PostMapping(path="/loginPage", consumes = "application/x-www-form-urlencoded", produces = "text/html")
     public String userLogin(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
         String email = form.getFirst("username").toLowerCase();
@@ -146,7 +141,8 @@ public class TriviaController {
         String cat = form.getFirst("cat");
         String dif = form.getFirst("dif");
         String type = form.getFirst("type");
-        triviaSvc.getTrivia(qn, cat, dif, type);
+        List<Trivia> trivia = triviaSvc.getTrivia(qn, cat, dif, type);
+        sess.setAttribute("trivia", trivia);
 
         List<String> ansSheet = triviaSvc.getAnswers(triviaSvc.getTrivia(qn, cat, dif, type));
         sess.setAttribute("ansSheet", ansSheet);
@@ -181,39 +177,16 @@ public class TriviaController {
         return "question";
     }
 
-    // @PostMapping("/next")
-    // public String saveOptions(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
-
-    //     String name = (String) sess.getAttribute("name");
-    //     sess.setAttribute("name", name);
-
-    //     String ans = form.getFirst("ans");
-    //     System.out.println("ANSWER SELECTED: " + ans);
-
-    //     String qnNum = form.getFirst("page");
-    //     System.out.println("QN NUMBER: " + qnNum);
-
-    //     ansList.add((Integer.parseInt(qnNum)-1), ans);
-    //     System.out.println("ans list: " + ansList.toString());
-    //     sess.setAttribute("anslist", ansList);
-    //     System.out.println("CALLED NEXT");
-
-    //     return listByPage(model, Integer.parseInt(qnNum)+1);
-    // }
-
     List<String> ansList = new ArrayList<>();
 
     @PostMapping("/next")
     public String saveOptions(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
-        // String qn = (String) sess.getAttribute("qn");
-        // sess.setAttribute("qn", qn);
+        String page = form.getFirst("page");
+        String ans = form.getFirst("ans");
 
         // System.out.println("ANSWER SELECTED: " + ans);
         // System.out.println("QN NUMBER: " + page);
-
-        String page = form.getFirst("page");
-        String ans = form.getFirst("ans");
 
         String[] ansList = (String[]) sess.getAttribute("ansList");
         ansList[Integer.parseInt(page)-1] = ans;
@@ -270,7 +243,6 @@ public class TriviaController {
         return "score";
     }
 
-
     // SCOREBOARD
     @RequestMapping("/scoreboard")
     public String getScoreboard(Model model) {
@@ -281,45 +253,4 @@ public class TriviaController {
         model.addAttribute("listUsers", users);
         return "scoreboard";
     }
-
-
-    // @PostMapping("/")
-    // public String prevNext(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
-
-    //     List<String> answers = null;
-
-    //     String ans = form.getFirst("ans");
-    //     System.out.println(">>>>ans selected: " + ans);
-
-        // <input  type="hidden" name="name" data-th-value="${name}">
-
-
-        // if (!isNull(name)) {
-		// 	// new session
-		// 	System.out.println("name not in session");
-		// 	sess.setAttribute("name", name);
-		// 	cart = new LinkedList<>();
-		// 	sess.setAttribute("cart", cart);
-
-		// } 
-
-        // name = (String)sess.getAttribute("name");
-		// cart = (List<String>)sess.getAttribute("cart");
-		// String item = form.getFirst("item");
-		// if (!isNull(item))
-		// 	cart.add(item);
-
-
-		// model.addAttribute("name", name.toUpperCase());
-		// model.addAttribute("cart", cart);
-        // if (ans.is)
-    //     return null;
-
-    // }
-        // @RequestParam(value="ans") String[] radioCheckedValues, 
-    
-    private boolean isNull(String s) {
-		return ((null == s) || (s.trim().length() <= 0));
-	}
- 
 }

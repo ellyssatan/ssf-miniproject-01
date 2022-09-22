@@ -2,7 +2,6 @@ package vttp.miniproject01game.services;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,20 +43,16 @@ public class TriviaService {
         String uri = UriComponentsBuilder.fromUriString(url)
         .queryParam("amount", qn)
         .queryParam("category", cat)
-        // .queryParamIfPresent("category", Optional.of(cat))
         .queryParam("difficulty", dif)
         .queryParamIfPresent("type", Optional.of(type))
         .toUriString();
 
-        // System.out.println("URI>> " + uri);
-        // Create the GET request, GET url
         RequestEntity<Void> req = RequestEntity.get(uri).build();
 
         RestTemplate template = new RestTemplate();
         ResponseEntity<String> resp;
 
         try {
-            // Throws exception if status code is not between 200 - 399
             resp = template.exchange(req, String.class);
         } catch (Exception e) {
             System.err.printf("Error: %s\n", e);
@@ -76,18 +71,15 @@ public class TriviaService {
         // Convert payload into JsonObject
         // Convert string to a Reader
         Reader strReader = new StringReader(payload);
-
         // Create a JsonReader from reader
         JsonReader jsonReader = Json.createReader(strReader);
-
         // Read and save the payload as Json Object
         JsonObject jObject = jsonReader.readObject();
-                                         // should tally with the object name from api
+
         JsonArray resultArray = jObject.getJsonArray("results");
 
         List<Trivia> list = new LinkedList<>();
         for (int i = 0; i < resultArray.size(); i++) {
-            // loop through the top _ coins
             JsonObject jo = resultArray.getJsonObject(i);
             JsonArray ansJo = jo.getJsonArray("incorrect_answers");
             // System.out.println(ansJo);
@@ -115,8 +107,6 @@ public class TriviaService {
     public List<Category> getCategories() {
 
         String payload;
-
-        // Create url with query string (add parameters)
         String URI = UriComponentsBuilder.fromUriString(categoriesUrl)
                 .toUriString();
         // Create the GET request, GET url
@@ -126,7 +116,6 @@ public class TriviaService {
         ResponseEntity<String> response;
 
         try {
-            // Throws exception if status code is not between 200 - 399
             response = template.exchange(request, String.class);
         } catch (Exception e) {
             System.err.printf("Error: %s\n", e);
@@ -145,13 +134,11 @@ public class TriviaService {
         // Convert payload into JsonObject
         // Convert string to a Reader
         Reader strReader = new StringReader(payload);
-
         // Create a JsonReader from reader
         JsonReader jsonReader = Json.createReader(strReader);
-
         // Read and save the payload as Json Object
         JsonObject jObject = jsonReader.readObject();
-                                         // should tally with the object name from api
+
         JsonArray triviaArray = jObject.getJsonArray("trivia_categories");
 
         List<Category> categoryList = new LinkedList<>();
@@ -163,8 +150,8 @@ public class TriviaService {
         }
         return categoryList;
     }
-
-    // Get list of answers
+    
+    // Get list of correct answers
     public List<String> getAnswers(List<Trivia> list) {
 
         return tRepo.getAnswers(list);

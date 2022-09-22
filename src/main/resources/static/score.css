@@ -1,0 +1,34 @@
+.topnav {
+    overflow: hidden;
+    background-color: rgb(95, 164, 239);
+}
+
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+  
+.topnav a:hover {
+    background-color: #ddd;
+    color: rgb(226, 179, 233);
+}
+  
+.topnav a.active {
+    background-color: #8ce2c2;
+    color: white;
+}
+  
+.topnav a.split {
+    float: right;
+    background-color: #d84343;
+    color: white;
+}
+
+.end {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}

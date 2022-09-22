@@ -25,7 +25,7 @@ public class UserRepository {
     @Qualifier("redis")
     private RedisTemplate<String, String> redisTemplate;
 
-    List<String> usersList = new ArrayList();
+    List<String> usersList = new ArrayList<>();
     String[] retrievedEmails;
     
     public Optional<String> getUser(String email) {
@@ -111,9 +111,9 @@ public class UserRepository {
 
             String email = u.trim();
 
-            System.out.println("email: " + email);
+            // System.out.println("email: " + email);
             String payload = valueOps.get(email);
-            System.out.println("payload: " + payload);
+            // System.out.println("payload: " + payload);
 
             Reader strReader = new StringReader(payload);        
             JsonReader jsonReader = Json.createReader(strReader);

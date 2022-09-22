@@ -1,8 +1,5 @@
 package vttp.miniproject01game.models;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import jakarta.json.Json;
