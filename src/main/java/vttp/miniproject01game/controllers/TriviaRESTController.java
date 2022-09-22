@@ -61,13 +61,13 @@ public class TriviaRESTController {
     }
 
     @GetMapping(path = "/quiz", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getScoreboard(HttpSession sess) {
+    public ResponseEntity<String> getScoreboard() {
 
         List<Trivia> list = triviaSvc.getSavedTrivia();
 
-        if (list == null) {
+        if (list.size() < 1) {
             JsonObject errorMsg = Json.createObjectBuilder()
-                .add("error", "Cannot find trivia")
+                .add("error", "Cannot find trivia, please log in and play")
                 .build();
                 
             String payload = errorMsg.toString();
