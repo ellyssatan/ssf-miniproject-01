@@ -17,6 +17,7 @@
     <table>
         <tr>
             <td>Username</td>
+            <td>User Email</td>
             <td>Highscore</td>
             <td>Accuracy</td>
         </tr>
@@ -26,10 +27,21 @@
                 <span data-th-text="${u.name}"></span>
             </td>
             <td>
+                <span data-th-text="${u.email}"></span>
+            </td>
+            <td>
                 <span data-th-text="${u.highscore}"></span>
             </td>
+            <td>
+                <span data-th-text="${u.accuracy}"></span>%
+            </td>
         </tr>
-        
+        <form action="/start">
+            <button type="submit">New Quiz</button>
+            <button type="submit" formaction="/logout" class="btn btn-danger">Log Out</button>
+            
+            <!-- <a th:href="@{login}" class="fw-bold text-body"><u>Login here</u></a> -->
+        </form>
     </table>
 
 

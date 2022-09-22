@@ -126,22 +126,31 @@ public class UserRepository {
 
     }
 
-    // Update score
-    public void updateScore(String email, int score) {
+    // Update score and calculate accuracy
+    public void updateScore(String email, int score, int total) {
 
         ValueOperations<String, String> valueOps = redisTemplate.opsForValue();
-
-        String userDetails = getUser(email).get();
+        String userDetails = valueOps.get(email);
+        
         Reader strReader = new StringReader(userDetails);        
         JsonReader jsonReader = Json.createReader(strReader);
+
         JsonObject jObject = jsonReader.readObject();
         User u = User.create(jObject);
 
         int userScore = u.getHighscore();
-        score += userScore;
+        double userTotalQn = u.getTotalQn();
+        userScore += score;
+        userTotalQn += total;
+        
+        double accuracy = userScore/userTotalQn*100;
+        System.out.println("CALCULATED " + String.format("%.1f", accuracy));
+
         u.setHighscore(userScore);
-        System.out.printf(">> new highscore %d set for %s", userScore, email);
+        u.setTotalQn((int) userTotalQn);
+        u.setAccuracy(String.format("%.1f", accuracy));
+
+        System.out.printf(">> new highscore %d set for %s - ACCURACY: %s\n\n", userScore, email, accuracy);
         valueOps.set(email, u.toJson(u).toString());
     }
-
 }

@@ -2,9 +2,7 @@ package vttp.miniproject01game.controllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -93,11 +91,12 @@ public class TriviaController {
 
             // System.out.println("Password matches");
             String name = u.getName();
+            email = u.getEmail();
 
             List<Category> options = triviaSvc.getCategories();
             // System.out.println(">>>OPTIONS LIST: " + options);
-
             sess.setAttribute("name", name);
+            sess.setAttribute("email", email);
 
             model.addAttribute("name", name);
             model.addAttribute("options", options);
@@ -122,19 +121,23 @@ public class TriviaController {
         return "login";
     }
 
-    // @GetMapping("/trivia")
-    // public String getCategories(Model model, HttpSession sess) {
+    @RequestMapping("/start")
+    public String startPage(Model model, HttpSession sess) {
 
-    //     List<Category> options = triviaSvc.getCategories();
-    //     System.out.println(">>>OPTIONS LIST: " + options);
-    //     String name = (String) sess.getAttribute("name");
-    //     sess.setAttribute("name", name);
-    //     System.out.println("NAME FROM getcat:  " + name);
+        String name = (String) sess.getAttribute("name");
 
-    //     model.addAttribute("name", name);
-    //     model.addAttribute("options", options);
-    //     return "start";
-    // }
+        List<Category> options = triviaSvc.getCategories();
+
+        model.addAttribute("name", name);
+        model.addAttribute("options", options);
+        return "start";
+    }
+
+    @RequestMapping("/logout")
+    public String logout(HttpSession sess) {
+        sess.invalidate();
+        return "login";
+    }
 
     @PostMapping("/trivia")
     public String getTrivia(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
@@ -145,7 +148,11 @@ public class TriviaController {
         String type = form.getFirst("type");
         triviaSvc.getTrivia(qn, cat, dif, type);
 
-        sess.setAttribute("qn", qn);
+        List<String> ansSheet = triviaSvc.getAnswers(triviaSvc.getTrivia(qn, cat, dif, type));
+        sess.setAttribute("ansSheet", ansSheet);
+
+        String[] ansList = new String[Integer.parseInt(qn)];
+        sess.setAttribute("ansList", ansList);
         
         String name = (String) sess.getAttribute("name");
         sess.setAttribute("name", name);
@@ -194,48 +201,82 @@ public class TriviaController {
     //     return listByPage(model, Integer.parseInt(qnNum)+1);
     // }
 
-    @GetMapping("/next")
-    public String saveOptions(@RequestParam String ans, @RequestParam String page, Model model, HttpSession sess) {
+    List<String> ansList = new ArrayList<>();
 
+    @PostMapping("/next")
+    public String saveOptions(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
-        String qn = (String) sess.getAttribute("qn");
-        sess.setAttribute("qn", qn);
-        String[] ansList = new String[Integer.parseInt(qn)];
+        // String qn = (String) sess.getAttribute("qn");
+        // sess.setAttribute("qn", qn);
 
-        String name = (String) sess.getAttribute("name");
-        sess.setAttribute("name", name);
+        // System.out.println("ANSWER SELECTED: " + ans);
+        // System.out.println("QN NUMBER: " + page);
 
-    
-        System.out.println("ANSWER SELECTED: " + ans);
-        System.out.println("QN NUMBER: " + page);
+        String page = form.getFirst("page");
+        String ans = form.getFirst("ans");
 
+        String[] ansList = (String[]) sess.getAttribute("ansList");
         ansList[Integer.parseInt(page)-1] = ans;
-        // ansList.add((), ans);
+
         System.out.println("ans list: " + Arrays.toString(ansList));
         sess.setAttribute("anslist", ansList);
 
         return listByPage(model, Integer.parseInt(page)+1);
     }
 
-    @GetMapping("/back")
-    public String getOptions(@RequestParam String page, Model model, HttpSession sess) {
+    @PostMapping("/back")
+    public String getOptions(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
-        sess.getAttribute("name");
         String[] ansList = (String[]) sess.getAttribute("anslist");
 
-        String ans = ansList[Integer.parseInt(page)+1];
-        System.out.println("CALLED BACK");
+        String page = form.getFirst("page");
 
+        String ans = ansList[Integer.parseInt(page)-2];
+        System.out.println("page---" + page);
+        System.out.println("CALLED BACK, ans selected: " + ans);
+
+        model.addAttribute("checked", ans);
         return listByPage(model, Integer.parseInt(page)-1);
 
     }
+
+    @PostMapping("/results")
+    public String getResults (@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
+
+        String qn = (String) sess.getAttribute("qn");
+        sess.setAttribute("qn", qn);
+
+        String ans = form.getFirst("ans");
+        String page = form.getFirst("page");
+
+        String[] ansList = (String[]) sess.getAttribute("ansList");
+        ansList[Integer.parseInt(page)-1] = ans;
+        sess.setAttribute("anslist", ansList);
+
+        ansList = (String[]) sess.getAttribute("anslist");
+        System.out.println(">>>>> USER ANSWERS" + Arrays.toString(ansList));
+        List<String> answers= (List<String>) sess.getAttribute("ansSheet");
+        System.out.println(">>>>> ANSWERS" + answers);
+
+        String email = (String) sess.getAttribute("email");
+        int score = triviaSvc.getScore(answers, ansList);
+        int total = answers.size();
+
+        userSvc.updateScore(email, score, total);
+        System.out.println(score);
+
+        model.addAttribute("score", score);
+        model.addAttribute("total", total);
+        return "score";
+    }
+
 
     // SCOREBOARD
     @RequestMapping("/scoreboard")
     public String getScoreboard(Model model) {
 
         List<User> users = userSvc.getAllUsers();
-        System.out.println(users.toString());
+        // System.out.println(users.toString());
 
         model.addAttribute("listUsers", users);
         return "scoreboard";
@@ -275,16 +316,8 @@ public class TriviaController {
     //     return null;
 
     // }
-
-    // @GetMapping("/getresults")
-    // public String getResults (@RequestParam(value="ans") String[] radioCheckedValues, Model model, HttpSession sess) {
-
-    //     for (String s : radioCheckedValues) {
-    //         System.out.println(s);
-    //     }
-    //     return null;
-    // }
-
+        // @RequestParam(value="ans") String[] radioCheckedValues, 
+    
     private boolean isNull(String s) {
 		return ((null == s) || (s.trim().length() <= 0));
 	}

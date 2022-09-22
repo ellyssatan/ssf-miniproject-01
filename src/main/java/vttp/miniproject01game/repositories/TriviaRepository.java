@@ -18,13 +18,27 @@ public class TriviaRepository {
     List<Trivia> triviaList = new LinkedList<>();
     
     public List<Trivia> saveTrivia(List<Trivia> list) {
+
+        triviaList.clear();
+
         for (Trivia t : list) {
             triviaList.add(t);
         }
         return triviaList;
     }
 
-    public List<Trivia> getTrivia(){
+    public List<Trivia> getTrivia() {
         return this.triviaList;
+    }
+
+    public List<String> getAnswers(List<Trivia> list) {
+        
+        List<String> answers = new LinkedList<>();
+
+        for (Trivia t : list) {
+            answers.add(t.getCorrect_answer());
+        }
+
+        return answers;
     }
 }

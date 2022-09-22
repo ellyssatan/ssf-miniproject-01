@@ -55,4 +55,10 @@ public class UserService {
         return uRepo.getAllUsers();
 
     }
+
+    // Update score
+    public void updateScore(String email, int score, int total) {
+
+        uRepo.updateScore(email, score, total);
+    }
 }

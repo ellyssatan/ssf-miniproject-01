@@ -34,23 +34,23 @@
                             </div>
                             <div data-th-each=" n : ${n.answers}">
                                 <div class="ans ml-2">
-                                    <label class="radio"><input type="radio" name="ans" data-th-value="${n}"><span data-th-text="${n}"></span></label>    
+                                    <label class="radio"><input th:type="radio" name="ans" th:value="${n}" th:checked="${n} == ${checked}"><span data-th-text="${n}"></span></label>    
                                 </div>          
                             </div>
                         </div>
                         <!-- prev/next button -->
                         <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
                             <div th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled' }">
-                                <a th:href="@{'/trivia/' + ${currentPage - 1}}">
-                                <button class="btn btn-primary d-flex border-danger align-items-center btn-danger" type="submit" formaction="/back" formmethod="GET">
+                                <a th:href="${currentPage} == 1 ? '#' : @{'/trivia/' + ${currentPage - 1}}">
+                                <button class="btn btn-primary border-danger align-items-center btn-danger" type="submit" formaction="/back" formmethod="POST" th:disabled="${currentPage} == 1">
                                     Previous
                                 </button>
                                 </a>
                             </div>
 
                             <div th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled' }">
-                                <a th:href="@{'/trivia/' + ${currentPage + 1}}">
-                                <button class="btn btn-primary border-success align-items-center btn-success" type="submit" formaction="/next" formmethod="GET">
+                                <a th:href="${currentPage} != ${totalPages} ? @{'/trivia/' + ${currentPage + 1}} : '#' ">
+                                <button class="btn btn-primary border-success align-items-center btn-success" type="submit" formaction="/next" formmethod="POST" th:disabled="${currentPage} == ${totalPages}">
                                     Next
                                 </button>
                                 </a>
@@ -60,10 +60,12 @@
                 </div>
             </div>
             <div>
-                <!-- <button type="submit" class="btn btn-primary border-success align-items-center btn-success d-flex justify-content-center">SUBMIT<i class="fa fa-angle-right ml-2"></i></button> -->
-                <nav >
+                <nav>
                     Total Items [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
                     <input type="hidden" name="page" data-th-value="${currentPage}">
+                    <div>
+                        <button type="submit" data-th-if="${currentPage} == ${totalPages}" class="btn btn-primary align-items-center">SUBMIT</button>
+                    </div>
 
                 <ul class="pagination justify-content-center">
                     <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled' }">
@@ -78,10 +80,10 @@
                         </div>
                     </li>
                      -->
-                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active' }"
+                    <!-- <li th:class="${currentPage != i ? 'page-item' : 'page-item active' }"
                     th:each="i : ${#numbers.sequence(1, totalPages)}">
                         <a class="page-link" th:href="@{'/trivia/' + ${i}}">[[${i}]]</a>
-                    </li>
+                    </li> -->
 
                     <!-- <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled' }">
                         <a class="page-link" th:href="@{'/trivia/' + ${currentPage + 1}}">

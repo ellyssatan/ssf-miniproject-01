@@ -14,6 +14,8 @@ public class User {
     private String email;
     private String password;
     private int highscore;
+    private int totalQn;
+    private String accuracy;
     
     public String getName() {   return name;    }
     public void setName(String name) {      this.name = name;   }
@@ -27,6 +29,12 @@ public class User {
     public int getHighscore() {   return highscore;        }
     public void setHighscore(int highscore) {      this.highscore = highscore;   }
 
+    public int getTotalQn() {   return totalQn;        }
+    public void setTotalQn(int totalQn) {      this.totalQn = totalQn;   }
+
+    public String getAccuracy() {   return accuracy;        }
+    public void setAccuracy(String accuracy) {      this.accuracy = accuracy;   }
+
     // Create a user
     public User create(String name, String email, String password) {
         User u = new User();
@@ -36,6 +44,8 @@ public class User {
         // System.out.printf("!!!!!! pw_hash: %s", pw_hash);
         u.setPassword(pw_hash);
         u.setHighscore(0);
+        u.setTotalQn(0);
+        u.setAccuracy("0");
         return u;
     }
 
@@ -46,6 +56,8 @@ public class User {
             .add("email", email)
             .add("password", password)
             .add("highscore", highscore)
+            .add("totalQn", totalQn)
+            .add("accuracy", accuracy)
             .build();
     }
 
@@ -56,6 +68,8 @@ public class User {
         u.setEmail(jo.getString("email"));
         u.setPassword(jo.getString("password"));
         u.setHighscore(jo.getInt("highscore"));
+        u.setTotalQn(jo.getInt("totalQn"));
+        u.setAccuracy(jo.getString("accuracy"));
         return u;
 
     }

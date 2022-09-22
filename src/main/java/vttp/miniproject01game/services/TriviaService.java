@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,6 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp.miniproject01game.models.Category;
 import vttp.miniproject01game.models.Trivia;
-import vttp.miniproject01game.models.User;
 import vttp.miniproject01game.repositories.TriviaRepository;
 
 @Service
@@ -168,13 +165,23 @@ public class TriviaService {
     }
 
     // Get list of answers
-    public List<String> getAnswers(List<Trivia> questions) {
+    public List<String> getAnswers(List<Trivia> list) {
 
-        List<String> correctAnswers = new ArrayList<>();
-        for (Trivia t : questions) {
-            correctAnswers.add(t.getCorrect_answer());
-        }
-        return correctAnswers;
+        return tRepo.getAnswers(list);
     }
+
+
+    public int getScore(List<String> answers, String[] userInput) {
+
+        int score = 0;
+
+        for (int i = 0; i < answers.size(); i++) {
+            if (answers.get(i).equals(userInput[i])) {
+                score++;
+            }
+        }
+        return score;
+    }
+
 
 }

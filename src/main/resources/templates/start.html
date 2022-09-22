@@ -26,7 +26,7 @@
                                     <div class="input-group input-group-lg ">
                                         <h2>Welcome <span th:text="${name}"></span></h2>
                                         <span class="input-group-text border-0 px-2" style="background-color: transparent;"><i class="bi bi-patch-question-fill" style="color: blue; font-size: 25px;"></i></span>
-                                        <input type="text" class="form-control rounded" placeholder="Number of questions" name="qn" required/>
+                                        <input type="text" class="form-control rounded" placeholder="Number of questions" name="qn"/>
                                     </div>
                                 </div>
                                 
@@ -34,7 +34,7 @@
                                     <div class="card-body p-3">
                                         <h6 class="mt-2 mb-2" style="color: #2587e9;">Customisation</h6>
                                         <div class="d-flex flex-column justify-content-center gap-3">
-                                            <div class="col-sm-4 mt-2 mb-2"> <!-- col-md-4 mb-3 -->
+                                            <div> <!-- class="col-sm-5 mt-2 mb-2" -->
                                                 <div class="dropdown">
                                                     <label for="dif">Select category:
                                                         <select class="btn btn-outline-dark btn-rounded btn-lg btn-block dropdown-toggle" id="dropDownList" required>
@@ -44,7 +44,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div><!--class="col-sm-4"-->
                                                 <div class="dropdown">
                                                     <label for="dif">Select difficulty:
                                                         <select name="dif" class="btn btn-outline-dark btn-rounded btn-lg btn-block dropdown-toggle">
@@ -55,10 +55,10 @@
                                                     </label> 
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
-                                                <div>
+                                            <div><!--class="col-sm-4"-->
+                                                <div class="dropdown">
                                                     <label for="dif">Select Question Type:
-                                                        <select name="type" class="btn btn-outline-dark btn-rounded btn-lg btn-block dropdown-toggle" id="dropDownList" data-mdb-toggle="dropdown" aria-expanded="false"required>
+                                                        <select name="type" class="btn btn-outline-dark btn-rounded btn-lg btn-block dropdown-toggle" id="dropDownList" data-mdb-toggle="dropdown" aria-expanded="false">
                                                             <option value="0">Question Type</option>
                                                             <option value="multiple">Multiple Choice</option>
                                                             <option value="boolean">True/False</option>
