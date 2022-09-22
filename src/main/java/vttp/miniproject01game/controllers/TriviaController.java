@@ -194,21 +194,26 @@ public class TriviaController {
         System.out.println("ans list: " + Arrays.toString(ansList));
         sess.setAttribute("anslist", ansList);
 
+        String nextAns = ansList[Integer.parseInt(page)];
+        if (nextAns != null) {
+            model.addAttribute("checked", nextAns);
+        }
         return listByPage(model, Integer.parseInt(page)+1);
     }
 
     @PostMapping("/back")
     public String getOptions(@RequestBody MultiValueMap<String, String> form, Model model, HttpSession sess) {
 
-        String[] ansList = (String[]) sess.getAttribute("anslist");
-
         String page = form.getFirst("page");
+        String ans = form.getFirst("ans");
 
-        String ans = ansList[Integer.parseInt(page)-2];
-        System.out.println("page---" + page);
-        System.out.println("CALLED BACK, ans selected: " + ans);
+        String[] ansList = (String[]) sess.getAttribute("ansList");
+        ansList[Integer.parseInt(page)-1] = ans;
+        sess.setAttribute("ansList", ansList);
 
-        model.addAttribute("checked", ans);
+        String prevAns = ansList[Integer.parseInt(page)-2];
+
+        model.addAttribute("checked", prevAns);
         return listByPage(model, Integer.parseInt(page)-1);
 
     }

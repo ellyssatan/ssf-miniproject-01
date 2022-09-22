@@ -150,6 +150,11 @@ public class TriviaService {
         }
         return categoryList;
     }
+
+    public List<Trivia> getSavedTrivia() {
+        
+        return tRepo.getTrivia();
+    }
     
     // Get list of correct answers
     public List<String> getAnswers(List<Trivia> list) {

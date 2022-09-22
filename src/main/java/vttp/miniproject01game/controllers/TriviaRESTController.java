@@ -1,5 +1,6 @@
 package vttp.miniproject01game.controllers;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import vttp.miniproject01game.models.Trivia;
 import vttp.miniproject01game.models.User;
+import vttp.miniproject01game.services.TriviaService;
 import vttp.miniproject01game.services.UserService;
 
 @RestController
@@ -25,6 +27,9 @@ public class TriviaRESTController {
 
     @Autowired
     private UserService userSvc;
+    
+    @Autowired
+    private TriviaService triviaSvc;
     
     @GetMapping(path = "/score/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserDetails(@PathVariable(name = "email") String email) {
@@ -58,7 +63,7 @@ public class TriviaRESTController {
     @GetMapping(path = "/quiz", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getScoreboard(HttpSession sess) {
 
-        List<Trivia> list = (List<Trivia>) sess.getAttribute("trivia");
+        List<Trivia> list = triviaSvc.getSavedTrivia();
 
         if (list == null) {
             JsonObject errorMsg = Json.createObjectBuilder()
